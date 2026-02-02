@@ -4,9 +4,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public final class SecurityUtils {
     public static final Integer REFRESH_HOUR = 168;
-    private static final String ADMIN_ROLES = "'母系統管理員','助教','管理員'";
-    public static final String HAS_ANY_ADMIN_AUTHORITY = "hasAnyAuthority(" + ADMIN_ROLES + ")";
-    public static final String HAS_ANY_ADMIN_OR_STUDENT_AUTHORITY = "hasAnyAuthority(" + ADMIN_ROLES + ",'學生')";
+    public static final String HAS_ANY_ADMIN_AUTHORITY = "hasAnyAuthority('母系統管理員','助教','管理員')";
 
     private SecurityUtils() {
 

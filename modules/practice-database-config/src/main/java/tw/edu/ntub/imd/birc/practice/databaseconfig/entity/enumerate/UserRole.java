@@ -54,10 +54,10 @@ public enum UserRole {
     }
 
     private static final Map<String, List<UserRole>> SYSTEM_ROLE_MAP = Map.of(
-            "1", List.of(STUDENT, PARENT_SYSTEM_ADMIN),
-            "2", List.of(STUDENT, TA),
-            "3", List.of(STUDENT, ADMIN),
-            "4", List.of(STUDENT, ADMIN));
+            "1", List.of(STUDENT),
+            "2", List.of(TA),
+            "3", List.of(ADMIN),
+            "4", List.of(PARENT_SYSTEM_ADMIN));
 
     public static List<UserRole> getRolesBySystemId(String systemId) {
         return SYSTEM_ROLE_MAP.getOrDefault(systemId, List.of(NO_PERMISSION));

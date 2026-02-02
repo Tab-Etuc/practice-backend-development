@@ -19,10 +19,10 @@ public class UserAccountDto {
     private String identity;
 
     public Boolean getIsStudent() {
-        return UserRole.of(identity) == UserRole.STUDENT;
+        return UserRole.getRolesBySystemId(identity).contains(UserRole.STUDENT);
     }
 
     public Boolean getIsManager() {
-        return UserRole.of(identity).isManager();
+        return UserRole.getRolesBySystemId(identity).stream().anyMatch(UserRole::isManager);
     }
 }

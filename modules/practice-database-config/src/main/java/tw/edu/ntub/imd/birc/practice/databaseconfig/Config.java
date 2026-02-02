@@ -39,7 +39,7 @@ public class Config {
         namedMap.put("delete*", requiredAttribute);
         namedMap.put("find*", readOnlyTransactionAttributes);
         namedMap.put("get*", readOnlyTransactionAttributes);
-        namedMap.put("search*", requiredAttribute);
+        namedMap.put("search*", readOnlyTransactionAttributes);
         namedMap.put("getCount*", readOnlyTransactionAttributes);
         namedMap.put("*", readOnlyTransactionAttributes);
         attributeSource.setNameMap(namedMap);

@@ -60,7 +60,7 @@ public class MemberApi {
                 .build();
     }
 
-    @PreAuthorize(SecurityUtils.HAS_ANY_ADMIN_OR_STUDENT_AUTHORITY)
+    @PreAuthorize(SecurityUtils.HAS_ANY_ADMIN_AUTHORITY)
     @PatchMapping("/update/{memberId}")
     public ResponseEntity<String> updateMember(@PathVariable Integer memberId, @RequestBody MemberDto memberDto) {
         memberService.update(memberId, memberDto);
@@ -69,7 +69,7 @@ public class MemberApi {
                 .build();
     }
 
-    @PreAuthorize(SecurityUtils.HAS_ANY_ADMIN_OR_STUDENT_AUTHORITY)
+    @PreAuthorize(SecurityUtils.HAS_ANY_ADMIN_AUTHORITY)
     @DeleteMapping("/delete/{memberId}")
     public ResponseEntity<String> deleteMember(@PathVariable Integer memberId) {
         memberService.delete(memberId);
