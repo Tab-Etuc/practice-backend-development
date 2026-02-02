@@ -27,8 +27,8 @@ public class Config {
         RollbackRuleAttribute rollbackRuleAttribute = new RollbackRuleAttribute(RuntimeException.class);
         requiredAttribute.setRollbackRules(Collections.singletonList(rollbackRuleAttribute));
         requiredAttribute.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        DefaultTransactionAttribute readOnlyTransactionAttributes =
-                new DefaultTransactionAttribute(TransactionDefinition.PROPAGATION_NOT_SUPPORTED);
+        DefaultTransactionAttribute readOnlyTransactionAttributes = new DefaultTransactionAttribute(
+                TransactionDefinition.PROPAGATION_NOT_SUPPORTED);
         readOnlyTransactionAttributes.setReadOnly(true);
         Map<String, TransactionAttribute> namedMap = new HashMap<>();
         namedMap.put("add*", requiredAttribute);
@@ -39,7 +39,7 @@ public class Config {
         namedMap.put("delete*", requiredAttribute);
         namedMap.put("find*", readOnlyTransactionAttributes);
         namedMap.put("get*", readOnlyTransactionAttributes);
-        namedMap.put("search*", readOnlyTransactionAttributes);
+        namedMap.put("search*", requiredAttribute);
         namedMap.put("getCount*", readOnlyTransactionAttributes);
         namedMap.put("*", readOnlyTransactionAttributes);
         attributeSource.setNameMap(namedMap);

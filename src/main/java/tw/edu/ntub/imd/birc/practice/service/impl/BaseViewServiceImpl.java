@@ -18,7 +18,7 @@ import java.util.Optional;
 
 public abstract class BaseViewServiceImpl<B, E, ID extends Serializable> implements BaseViewService<B, ID> {
     private final BaseViewDAO<E, ID> baseDAO;
-    private final BeanEntityTransformer<B, E> transformer;
+    protected final BeanEntityTransformer<B, E> transformer;
 
     public BaseViewServiceImpl(BaseViewDAO<E, ID> d, BeanEntityTransformer<B, E> transformer) {
         Assert.notNull(d, "baseDAO不能為null");
@@ -52,8 +52,7 @@ public abstract class BaseViewServiceImpl<B, E, ID extends Serializable> impleme
         } else {
             PageRequest pageRequest = PageRequest.of(
                     MathUtils.translateOneBasedToZeroBased(pager.getPage()),
-                    pager.getCount()
-            );
+                    pager.getCount());
             entityList = baseDAO.findAll(pageRequest).getContent();
         }
         return CollectionUtils.map(entityList, transformer::transferToBean);

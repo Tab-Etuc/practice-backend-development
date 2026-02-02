@@ -1,6 +1,7 @@
 package tw.edu.ntub.imd.birc.practice.util.http;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -100,16 +101,28 @@ public class ResponseEntityBuilder {
         return data(new MapArrayData(resource));
     }
 
-    public <K, V> ResponseEntityBuilder data(Map<K, V> resource, TripleConsumer<ObjectData, K, V> addObjectDataConsumer) {
+    public <K, V> ResponseEntityBuilder data(Map<K, V> resource,
+            TripleConsumer<ObjectData, K, V> addObjectDataConsumer) {
         return data(new MapArrayData(resource, addObjectDataConsumer));
     }
 
-    public <K, V> ResponseEntityBuilder data(Map<K, V> resource, AddObjectDataMapConsumer<K, V> addObjectDataMapConsumer) {
+    public <K, V> ResponseEntityBuilder data(Map<K, V> resource,
+            AddObjectDataMapConsumer<K, V> addObjectDataMapConsumer) {
         return data(new MapArrayData(resource, addObjectDataMapConsumer));
     }
 
     public ResponseEntityBuilder data(ResponseData responseData) {
         this.responseData = responseData;
+        return this;
+    }
+
+    public ResponseEntityBuilder data(Object object) {
+        this.responseData = new ResponseData() {
+            @Override
+            public JsonNode getData() {
+                return ResponseUtils.createMapper().valueToTree(object);
+            }
+        };
         return this;
     }
 
@@ -126,14 +139,12 @@ public class ResponseEntityBuilder {
         try {
             ObjectData result = new ObjectData()
                     .add("result", success)
-                    .add("errorCode", ProjectException != null ?
-                            ProjectException.getErrorCode() : errorCode != null ? errorCode : "")
+                    .add("errorCode",
+                            ProjectException != null ? ProjectException.getErrorCode()
+                                    : errorCode != null ? errorCode : "")
                     .add("message", message)
                     .replace("data",
-                            responseData != null ?
-                                    responseData.getData() :
-                                    new ObjectData().getData()
-                    );
+                            responseData != null ? responseData.getData() : new ObjectData().getData());
             String body = ResponseUtils.createMapper().writeValueAsString(result.getData());
             System.out.println("Response JSON = " + body);
             return body;

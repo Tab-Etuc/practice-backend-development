@@ -32,6 +32,14 @@ public enum UserRole {
         return UserRole.NO_PERMISSION;
     }
 
+    public static UserRole of(String value) {
+        try {
+            return of(Integer.parseInt(value));
+        } catch (Exception e) {
+            return NO_PERMISSION;
+        }
+    }
+
     public static String getRoleTypeName(UserRole userRoleEnum) {
         return "[" + userRoleEnum.getTypeName() + "]";
     }
@@ -49,10 +57,13 @@ public enum UserRole {
             "1", List.of(STUDENT, PARENT_SYSTEM_ADMIN),
             "2", List.of(STUDENT, TA),
             "3", List.of(STUDENT, ADMIN),
-            "4", List.of(STUDENT, ADMIN)
-    );
+            "4", List.of(STUDENT, ADMIN));
 
     public static List<UserRole> getRolesBySystemId(String systemId) {
         return SYSTEM_ROLE_MAP.getOrDefault(systemId, List.of(NO_PERMISSION));
+    }
+
+    public boolean isManager() {
+        return this == ADMIN || this == TA || this == PARENT_SYSTEM_ADMIN;
     }
 }
