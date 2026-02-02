@@ -18,17 +18,27 @@ import java.io.IOException;
 
 public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    public CustomLoginFilter(AuthenticationManager authenticationManager, AuthenticationSuccessHandler authenticationSuccessHandler) {
+    public CustomLoginFilter(AuthenticationManager authenticationManager,
+            AuthenticationSuccessHandler authenticationSuccessHandler) {
         setAuthenticationManager(authenticationManager);
         setAuthenticationSuccessHandler(authenticationSuccessHandler);
         setAuthenticationFailureHandler(new CustomAuthenticationFailHandler());
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        if (request.getMethod().equalsIgnoreCase("POST") && request.getHeader("X-Client-Token") != null) {
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    request.getHeader("X-Client-Token"), null);
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
+        if (request.getMethod().equalsIgnoreCase("POST")) {
+            String account = obtainUsername(request);
+            String password = obtainPassword(request);
+            UsernamePasswordAuthenticationToken authentication;
+
+            if (request.getContentType() != null && request.getContentType().startsWith("application/json")) {
+                authentication = resolveAuthenticationFromRequestBody(request);
+            } else {
+                authentication = new UsernamePasswordAuthenticationToken(account, password);
+            }
+
             setDetails(request, authentication);
             return getAuthenticationManager().authenticate(authentication);
         } else {
@@ -36,7 +46,8 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         }
     }
 
-    private UsernamePasswordAuthenticationToken resolveAuthenticationFromRequestBody(HttpServletRequest request) throws AuthenticationException {
+    private UsernamePasswordAuthenticationToken resolveAuthenticationFromRequestBody(HttpServletRequest request)
+            throws AuthenticationException {
         StringBuilder stringBuilder = new StringBuilder();
         String line;
         try {
@@ -46,10 +57,10 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
             }
             ObjectMapper mapper = new ObjectMapper();
             JsonNode loginRequest = mapper.readTree(stringBuilder.toString());
+
             return new UsernamePasswordAuthenticationToken(
                     loginRequest.findValue("account").asText(),
-                    loginRequest.findValue("password").asText()
-            );
+                    loginRequest.findValue("password").asText());
         } catch (IOException e) {
             e.printStackTrace();
             throw new AuthenticationServiceException("登入失敗");
